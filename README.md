@@ -5,11 +5,33 @@ Make your website reachable from **both inside and outside Iran** on the same do
 ## How it works
 
 ```
-Iranian user  →  DNS → Iran server IP  →  Xray tunnel  →  Foreign server (main backend)
-Foreign user  →  DNS → Foreign server IP              →  Foreign server (main backend)
+                        ┌─────────────────────────────────────────────────────┐
+                        │                  BIND9 (GeoDNS)                     │
+                        │         runs on BOTH servers, same config           │
+                        │                                                     │
+                        │  Iranian resolver ──► iran view ──► Iran server IP  │
+                        │  Global resolver  ──► default view ──► Foreign IP   │
+                        └─────────────────────────────────────────────────────┘
+                                  ▲                        ▲
+                                  │                        │
+                            ns2 (Iran)               ns1 (Foreign)
+                          (Iran server IP)         (Foreign server IP)
+
+
+Iranian user                                        Foreign user
+     │                                                   │
+     │ DNS query → returns Iran server IP                │ DNS query → returns Foreign server IP
+     ▼                                                   ▼
+Iran server                                        Foreign server
+  (Nginx)                                          (main backend)
+     │
+     │ Xray tunnel (vmess/vless)
+     ▼
+Foreign server
+  (main backend)
 ```
 
-GeoDNS returns different IPs based on the user's location. Both reach the same backend.
+Both users reach the same backend — Iranian users go through the Iran server as a tunnel.
 
 ## Prerequisites
 
