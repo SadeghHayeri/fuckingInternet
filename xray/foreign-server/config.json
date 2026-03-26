@@ -1,0 +1,32 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "// COMMENT": "این inbound برای دریافت تانل از سرور ایران هست",
+      "port": 10443,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "YOUR_VMESS_UUID",
+            "alterId": 0
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/tunnel"
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    }
+  ]
+}

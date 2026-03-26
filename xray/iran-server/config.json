@@ -1,0 +1,71 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "// COMMENT": "پورت ۸۰ — HTTP رو از کاربر می‌گیره و فوروارد می‌کنه",
+      "port": 80,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "127.0.0.1",
+        "port": 80,
+        "network": "tcp",
+        "followRedirect": false
+      },
+      "tag": "http-in"
+    },
+    {
+      "// COMMENT": "پورت ۴۴۳ — HTTPS رو از کاربر می‌گیره و فوروارد می‌کنه",
+      "port": 443,
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "127.0.0.1",
+        "port": 443,
+        "network": "tcp",
+        "followRedirect": false
+      },
+      "tag": "https-in"
+    }
+  ],
+  "outbounds": [
+    {
+      "// COMMENT": "تانل به سرور خارج از طریق vmess/websocket",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "FOREIGN_SERVER_IP",
+            "port": 10443,
+            "users": [
+              {
+                "id": "YOUR_VMESS_UUID",
+                "alterId": 0,
+                "security": "auto"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/tunnel"
+        }
+      },
+      "tag": "vmess-tunnel"
+    },
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    }
+  ],
+  "routing": {
+    "rules": [
+      {
+        "inboundTag": ["http-in", "https-in"],
+        "outboundTag": "vmess-tunnel"
+      }
+    ]
+  }
+}
