@@ -69,6 +69,17 @@ GeoDNS returns different IPs based on the user's location. Both IPs eventually r
 │   └── iran-server.conf         # Nginx reverse proxy with caching
 ├── geodns/
 │   ├── README.md
+│   ├── bind/
+│   │   ├── README.md            # Self-hosted BIND9 GeoDNS (primary approach)
+│   │   ├── named.conf
+│   │   ├── named.conf.local     # Views: iran vs default
+│   │   ├── named.conf.options
+│   │   ├── named.conf.logging
+│   │   ├── acl/iran.acl         # Iranian IP ranges
+│   │   └── zones/
+│   │       ├── db.YOUR_DOMAIN.global
+│   │       └── db.YOUR_DOMAIN.iran
+│   ├── compose.yaml             # Docker Compose for BIND9
 │   ├── cloudflare/
 │   │   └── setup.md             # GeoDNS setup with Cloudflare
 │   └── route53/
@@ -99,7 +110,8 @@ Replace the following values:
 - `FOREIGN_SERVER_IP` — IP address of the foreign server
 
 ### 4. Set up GeoDNS
-Pick your DNS provider:
+Deploy the self-hosted BIND9 setup on both servers and point your domain's NS records at them:
+- [BIND9 (self-hosted, recommended)](geodns/bind/README.md)
 - [Cloudflare](geodns/cloudflare/setup.md)
 - [AWS Route53](geodns/route53/setup.md)
 

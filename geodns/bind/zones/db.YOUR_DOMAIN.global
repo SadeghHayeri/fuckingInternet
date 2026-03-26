@@ -1,0 +1,30 @@
+$TTL 300
+@   IN  SOA ns1.YOUR_DOMAIN. hostmaster.YOUR_DOMAIN. (
+        2026010101  ; serial (YYYYMMDDnn) — increment on every change
+        3600        ; refresh
+        900         ; retry
+        1209600     ; expire
+        300         ; negative cache
+)
+
+; Authoritative nameservers
+; ns1 = global server, ns2 = Iran server — both run the same BIND config
+@   IN  NS  ns1.YOUR_DOMAIN.
+@   IN  NS  ns2.YOUR_DOMAIN.
+
+; Nameserver A records (glue records)
+ns1     1 IN A NS1_IP
+ns2     1 IN A NS2_IP
+
+; Main domain — point to global/main backend
+@       1 IN A GLOBAL_SERVER_IP
+*       1 IN A GLOBAL_SERVER_IP
+
+; --- Add your other A records below ---
+; mail    1 IN A MAIL_SERVER_IP
+
+; --- MX ---
+; @    1 IN MX 10 mail.YOUR_DOMAIN.
+
+; --- SPF ---
+; @    1 IN TXT "v=spf1 mx -all"

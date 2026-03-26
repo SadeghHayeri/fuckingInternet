@@ -1,0 +1,12 @@
+logging {
+    channel console_log {
+        stderr;
+        severity info;
+        print-time yes;
+        print-category yes;
+        print-severity yes;
+    };
+
+    category queries { console_log; };
+};
+

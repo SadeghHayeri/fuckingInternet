@@ -1,0 +1,30 @@
+$TTL 300
+@   IN  SOA ns1.YOUR_DOMAIN. hostmaster.YOUR_DOMAIN. (
+        2026010101  ; serial (YYYYMMDDnn) — increment on every change
+        3600        ; refresh
+        900         ; retry
+        1209600     ; expire
+        300         ; negative cache
+)
+
+; Authoritative nameservers
+; Same NS records as global zone — both servers are authoritative
+@   IN  NS  ns1.YOUR_DOMAIN.
+@   IN  NS  ns2.YOUR_DOMAIN.
+
+; Nameserver A records (glue records)
+ns1     1 IN A NS1_IP
+ns2     1 IN A NS2_IP
+
+; Main domain — Iranian clients get the Iran server IP instead
+@       1 IN A IRAN_SERVER_IP
+*       1 IN A IRAN_SERVER_IP
+
+; --- Add your other A records below (copy from global, override only what differs) ---
+; mail    1 IN A MAIL_SERVER_IP
+
+; --- MX ---
+; @    1 IN MX 10 mail.YOUR_DOMAIN.
+
+; --- SPF ---
+; @    1 IN TXT "v=spf1 mx -all"

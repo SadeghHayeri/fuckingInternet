@@ -1,0 +1,23 @@
+include "/etc/bind/acl/iran.acl";
+
+view "iran" {
+  match-clients { iran_clients; };
+  recursion no;
+
+  zone "YOUR_DOMAIN" {
+    type master;
+    file "/etc/bind/zones/db.YOUR_DOMAIN.iran";
+    allow-transfer { none; };
+  };
+};
+
+view "default" {
+  match-clients { any; };
+  recursion no;
+
+  zone "YOUR_DOMAIN" {
+    type master;
+    file "/etc/bind/zones/db.YOUR_DOMAIN.global";
+    allow-transfer { none; };
+  };
+};
