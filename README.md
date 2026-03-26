@@ -59,10 +59,8 @@ GeoDNS returns different IPs based on the user's location. Both IPs eventually r
 ├── README.md
 ├── xray/
 │   ├── README.md
-│   ├── iran-server/
-│   │   └── config.json          # Xray config for Iran server (outbound tunnel)
-│   └── foreign-server/
-│       └── config.json          # Xray config for foreign server (inbound)
+│   └── iran-server/
+│       └── config.json          # Xray config for Iran server (outbound tunnel)
 ├── nginx/
 │   ├── README.md
 │   ├── nginx.conf               # Main nginx config (cache zone, log format)
@@ -100,10 +98,7 @@ GeoDNS returns different IPs based on the user's location. Both IPs eventually r
 bash scripts/install-xray.sh
 ```
 
-### 2. Set up the foreign server (main)
-Place `xray/foreign-server/config.json` on the foreign server and run Xray.
-
-### 3. Set up the Iran server
+### 2. Set up the Iran server
 Place `xray/iran-server/config.json` on the Iran server.
 Replace the following values:
 - `YOUR_VMESS_UUID` — the UUID from your vmess/vless config

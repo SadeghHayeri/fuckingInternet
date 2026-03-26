@@ -1,12 +1,5 @@
 # Xray Configuration
 
-## Foreign server (`foreign-server/config.json`)
-
-Opens a **vmess inbound** on port `10443` that the Iran server connects to.
-
-Values to replace:
-- `YOUR_VMESS_UUID` — generate a random UUID: `cat /proc/sys/kernel/random/uuid`
-
 ## Iran server (`iran-server/config.json`)
 
 Accepts traffic on ports `53` (DNS), `4443` (HTTPS), and `8000` (HTTP) and tunnels it to the foreign server via a single vmess/vless outbound.
