@@ -1,5 +1,11 @@
 # Nginx Configuration
 
+## `nginx.conf`
+
+Main nginx config. Defines the `cdn_cache` proxy cache zone used by the site config, custom upstream log format, and includes site configs from `sites-enabled/`.
+
+Copy to `/etc/nginx/nginx.conf`.
+
 ## `iran-server.conf`
 
 Reverse proxy with caching. Sits in front of Xray's port-forwarded backend (`127.0.0.1:8000`).

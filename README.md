@@ -65,6 +65,7 @@ GeoDNS returns different IPs based on the user's location. Both IPs eventually r
 │       └── config.json          # Xray config for foreign server (inbound)
 ├── nginx/
 │   ├── README.md
+│   ├── nginx.conf               # Main nginx config (cache zone, log format)
 │   └── iran-server.conf         # Nginx reverse proxy with caching
 ├── geodns/
 │   ├── README.md
