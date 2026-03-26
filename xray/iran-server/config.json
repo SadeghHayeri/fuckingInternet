@@ -43,59 +43,14 @@
       "// HOW TO": "Ask ChatGPT: 'Convert this to an Xray JSON outbound object: vmess://...' or 'vless://...'",
       "// REQUIRED": "Make sure the converted config includes: \"tag\": \"vpn-access\"",
       "tag": "vpn-access"
-    },
-    {
-      "tag": "direct",
-      "protocol": "freedom"
-    },
-    {
-      "tag": "socks-proxy",
-      "protocol": "socks",
-      "settings": {
-        "servers": [
-          {
-            "address": "127.0.0.1",
-            "port": 9012
-          }
-        ]
-      }
     }
   ],
   "routing": {
     "rules": [
       {
         "type": "field",
-        "inboundTag": [
-          "dns-fwd",
-          "https-fwd",
-          "http-fwd"
-        ],
-        "outboundTag": "socks-proxy"
-      },
-      {
-        "type": "field",
-        "inboundTag": [
-          "bridge-socks"
-        ],
-        "domain": [
-          "full:socks.internal"
-        ],
+        "inboundTag": ["dns-fwd", "https-fwd", "http-fwd"],
         "outboundTag": "vpn-access"
-      },
-      {
-        "type": "field",
-        "inboundTag": [
-          "bridge-socks"
-        ],
-        "outboundTag": "direct"
-      }
-    ]
-  },
-  "reverse": {
-    "bridges": [
-      {
-        "tag": "bridge-socks",
-        "domain": "socks.internal"
       }
     ]
   }
