@@ -8,12 +8,12 @@ CONFIG_SRC="$SCRIPT_DIR/../xray/iran-server/config.json"
 
 # --- Set these values ---
 FOREIGN_SERVER_IP="${FOREIGN_SERVER_IP:-}"
-VMESS_UUID="${VMESS_UUID:-}"
+MAIN_BACKEND_IP="${MAIN_BACKEND_IP:-}"
 # ------------------------
 
-if [[ -z "$FOREIGN_SERVER_IP" || -z "$VMESS_UUID" ]]; then
+if [[ -z "$FOREIGN_SERVER_IP" || -z "$MAIN_BACKEND_IP" ]]; then
   echo "Usage:"
-  echo "  FOREIGN_SERVER_IP=1.2.3.4 VMESS_UUID=your-uuid bash setup-iran-server.sh"
+  echo "  FOREIGN_SERVER_IP=1.2.3.4 MAIN_BACKEND_IP=5.6.7.8 bash setup-iran-server.sh"
   exit 1
 fi
 
@@ -27,7 +27,7 @@ fi
 mkdir -p /usr/local/etc/xray
 sed \
   -e "s/FOREIGN_SERVER_IP/$FOREIGN_SERVER_IP/g" \
-  -e "s/YOUR_VMESS_UUID/$VMESS_UUID/g" \
+  -e "s/MAIN_BACKEND_IP/$MAIN_BACKEND_IP/g" \
   "$CONFIG_SRC" > /usr/local/etc/xray/config.json
 
 echo "Config written to /usr/local/etc/xray/config.json"

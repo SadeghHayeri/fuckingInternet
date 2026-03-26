@@ -10,7 +10,7 @@
 
 ```bash
 # On the Iran server:
-FOREIGN_SERVER_IP=1.2.3.4 VMESS_UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx \
+FOREIGN_SERVER_IP=1.2.3.4 MAIN_BACKEND_IP=5.6.7.8 \
   bash setup-iran-server.sh
 
 # Check status:

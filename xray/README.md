@@ -9,11 +9,12 @@ Values to replace:
 
 ## Iran server (`iran-server/config.json`)
 
-Accepts traffic on ports `80` and `443` and forwards it through a vmess tunnel to the foreign server.
+Accepts traffic on ports `53` (DNS), `4443` (HTTPS), and `8000` (HTTP) and routes it through a local socks proxy to the destination servers. Uses Xray's reverse bridge to maintain the tunnel.
 
 Values to replace:
-- `YOUR_VMESS_UUID` — same UUID as the foreign server
-- `FOREIGN_SERVER_IP` — IP address of the foreign server
+- `FOREIGN_SERVER_IP` — IP of the foreign/proxy server (used for DNS forwarding)
+- `MAIN_BACKEND_IP` — IP of your main web backend server
+- `vpn-access` outbound — paste your converted vmess/vless outbound JSON here (see comment in config)
 
 ## Running
 

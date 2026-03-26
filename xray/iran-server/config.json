@@ -4,67 +4,98 @@
   },
   "inbounds": [
     {
-      "// COMMENT": "Port 80 — accepts HTTP from users and forwards it",
-      "port": 80,
+      "tag": "dns-fwd",
+      "port": 53,
+      "listen": "0.0.0.0",
       "protocol": "dokodemo-door",
       "settings": {
-        "address": "127.0.0.1",
-        "port": 80,
-        "network": "tcp",
-        "followRedirect": false
-      },
-      "tag": "http-in"
+        "address": "FOREIGN_SERVER_IP",
+        "port": 53,
+        "network": "tcp,udp"
+      }
     },
     {
-      "// COMMENT": "Port 443 — accepts HTTPS from users and forwards it",
-      "port": 443,
+      "tag": "https-fwd",
+      "port": 4443,
+      "listen": "127.0.0.1",
       "protocol": "dokodemo-door",
       "settings": {
-        "address": "127.0.0.1",
+        "address": "MAIN_BACKEND_IP",
         "port": 443,
-        "network": "tcp",
-        "followRedirect": false
-      },
-      "tag": "https-in"
+        "network": "tcp"
+      }
+    },
+    {
+      "tag": "http-fwd",
+      "port": 8000,
+      "listen": "127.0.0.1",
+      "protocol": "dokodemo-door",
+      "settings": {
+        "address": "MAIN_BACKEND_IP",
+        "port": 80,
+        "network": "tcp"
+      }
     }
   ],
   "outbounds": [
     {
-      "// COMMENT": "Tunnel to the foreign server via vmess/websocket",
-      "protocol": "vmess",
-      "settings": {
-        "vnext": [
-          {
-            "address": "FOREIGN_SERVER_IP",
-            "port": 10443,
-            "users": [
-              {
-                "id": "YOUR_VMESS_UUID",
-                "alterId": 0,
-                "security": "auto"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-          "path": "/tunnel"
-        }
-      },
-      "tag": "vmess-tunnel"
+      "// IMPORTANT": "Replace this entire object with your converted vmess:// or vless:// config.",
+      "// HOW TO": "Ask ChatGPT: 'Convert this to an Xray JSON outbound object: vmess://...' or 'vless://...'",
+      "// REQUIRED": "Make sure the converted config includes: \"tag\": \"vpn-access\"",
+      "tag": "vpn-access"
     },
     {
-      "protocol": "freedom",
-      "tag": "direct"
+      "tag": "direct",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "socks-proxy",
+      "protocol": "socks",
+      "settings": {
+        "servers": [
+          {
+            "address": "127.0.0.1",
+            "port": 9012
+          }
+        ]
+      }
     }
   ],
   "routing": {
     "rules": [
       {
-        "inboundTag": ["http-in", "https-in"],
-        "outboundTag": "vmess-tunnel"
+        "type": "field",
+        "inboundTag": [
+          "dns-fwd",
+          "https-fwd",
+          "http-fwd"
+        ],
+        "outboundTag": "socks-proxy"
+      },
+      {
+        "type": "field",
+        "inboundTag": [
+          "bridge-socks"
+        ],
+        "domain": [
+          "full:socks.internal"
+        ],
+        "outboundTag": "vpn-access"
+      },
+      {
+        "type": "field",
+        "inboundTag": [
+          "bridge-socks"
+        ],
+        "outboundTag": "direct"
+      }
+    ]
+  },
+  "reverse": {
+    "bridges": [
+      {
+        "tag": "bridge-socks",
+        "domain": "socks.internal"
       }
     ]
   }
