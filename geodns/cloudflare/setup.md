@@ -1,53 +1,51 @@
-# GeoDNS با Cloudflare
+# GeoDNS with Cloudflare
 
-Cloudflare پلن رایگانش GeoDNS نداره، ولی با **Load Balancing** (پولی) یا **Workers** (رایگان با محدودیت) میشه شبیه‌سازیش کرد.
+Cloudflare's free plan does not support GeoDNS, but you can simulate it with **Load Balancing** (paid) or **Workers** (free with limits).
 
 ---
 
-## روش ۱: Cloudflare Load Balancing (پولی، ساده‌تر)
+## Option 1: Cloudflare Load Balancing (paid, simplest)
 
-### ۱. Pool بسازید
+### 1. Create pools
 
-وارد Cloudflare Dashboard شید:
+Go to Cloudflare Dashboard:
 `Traffic > Load Balancing > Manage Pools > Create Pool`
 
-- **Pool ایران**: آی‌پی سرور ایران
-- **Pool خارج**: آی‌پی سرور خارج
+- **Iran pool**: Iran server IP
+- **Foreign pool**: Foreign server IP
 
-### ۲. Load Balancer بسازید
+### 2. Create a Load Balancer
 
 `Traffic > Load Balancing > Create Load Balancer`
 
 - Hostname: `yourdomain.com`
-- Default Pool: Pool خارج
+- Default Pool: Foreign pool
 
-### ۳. Geo Routing اضافه کنید
+### 3. Add Geo Routing
 
-در تب **Geo Routing**:
+Under the **Geo Routing** tab:
 
 | Region | Pool |
 |--------|------|
-| Iran (IR) | Pool ایران |
-| Default | Pool خارج |
+| Iran (IR) | Iran pool |
+| Default | Foreign pool |
 
 ---
 
-## روش ۲: Cloudflare Workers (رایگان)
+## Option 2: Cloudflare Workers (free)
 
-یک Worker بسازید که بر اساس `cf.country` ریدایرکت کنه:
+Create a Worker that proxies based on `cf.country`:
 
 ```javascript
 export default {
   async fetch(request, env) {
     const country = request.cf?.country ?? 'XX';
 
-    // آی‌پی‌ها رو اینجا بذارید
     const IRAN_SERVER = 'https://IRAN_SERVER_IP';
     const FOREIGN_SERVER = 'https://FOREIGN_SERVER_IP';
 
     const target = country === 'IR' ? IRAN_SERVER : FOREIGN_SERVER;
 
-    // درخواست رو به سرور مناسب پاس بده
     const url = new URL(request.url);
     const targetUrl = target + url.pathname + url.search;
 
@@ -60,16 +58,16 @@ export default {
 };
 ```
 
-> **نکته**: این روش پروکسی هست نه DNS خالص — لیتنسی بیشتری داره.
+> **Note**: This is a proxy, not pure DNS — it adds latency compared to a real GeoDNS solution.
 
 ---
 
-## روش ۳: DNS جداگانه (توصیه شده برای پروداکشن)
+## Option 3: Dedicated GeoDNS provider (recommended for production)
 
-به جای Cloudflare برای GeoDNS، از یه DNS provider که واقعاً GeoDNS داره استفاده کنید:
+Use a DNS provider with native GeoDNS support instead of Cloudflare for routing:
 
-- **AWS Route53** — ببینید [../route53/setup.md](../route53/setup.md)
-- **NS1** — رایگان تا ۵۰۰k query در ماه
+- **AWS Route53** — see [../route53/setup.md](../route53/setup.md)
+- **NS1** — free up to 500k queries/month
 - **DNSMadeEasy**
 
-و Cloudflare رو فقط برای CDN/WAF روی هر دو سرور نگه دارید.
+Keep Cloudflare only for CDN/WAF in front of each server.

@@ -1,15 +1,15 @@
 #!/bin/bash
-# راه‌اندازی سرور ایران — Xray با کانفیگ port-forward
+# Set up the Iran server — Xray with port-forward config
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_SRC="$SCRIPT_DIR/../xray/iran-server/config.json"
 
-# --- مقادیر رو اینجا بذارید ---
+# --- Set these values ---
 FOREIGN_SERVER_IP="${FOREIGN_SERVER_IP:-}"
 VMESS_UUID="${VMESS_UUID:-}"
-# --------------------------------
+# ------------------------
 
 if [[ -z "$FOREIGN_SERVER_IP" || -z "$VMESS_UUID" ]]; then
   echo "Usage:"
@@ -17,13 +17,13 @@ if [[ -z "$FOREIGN_SERVER_IP" || -z "$VMESS_UUID" ]]; then
   exit 1
 fi
 
-# نصب Xray اگه نصب نیست
+# Install Xray if not present
 if ! command -v xray &>/dev/null; then
   echo "Xray not found, installing..."
   bash "$SCRIPT_DIR/install-xray.sh"
 fi
 
-# کانفیگ رو کپی و مقادیر رو جایگزین کن
+# Copy config and substitute values
 mkdir -p /usr/local/etc/xray
 sed \
   -e "s/FOREIGN_SERVER_IP/$FOREIGN_SERVER_IP/g" \
@@ -32,7 +32,7 @@ sed \
 
 echo "Config written to /usr/local/etc/xray/config.json"
 
-# سرویس رو فعال و شروع کن
+# Enable and start the service
 systemctl enable xray
 systemctl restart xray
 

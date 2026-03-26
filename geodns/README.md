@@ -1,18 +1,18 @@
-# GeoDNS راهنما
+# GeoDNS Guide
 
-GeoDNS یعنی DNS سرور بر اساس موقعیت جغرافیایی کاربر، آی‌پی‌های مختلف برگردونه.
+GeoDNS returns different IP addresses based on the user's geographic location.
 
-## گزینه‌ها
+## Options
 
-| سرویس | GeoDNS واقعی | رایگان | سادگی |
-|-------|-------------|--------|-------|
-| [AWS Route53](route53/setup.md) | ✅ | ❌ (~$1/ماه) | متوسط |
-| [Cloudflare LB](cloudflare/setup.md) | ✅ | ❌ (پولی) | ساده |
-| [Cloudflare Workers](cloudflare/setup.md) | شبیه‌سازی | ✅ (محدود) | متوسط |
-| NS1 | ✅ | ✅ (تا 500k query) | متوسط |
+| Provider | Real GeoDNS | Free | Ease |
+|----------|-------------|------|------|
+| [AWS Route53](route53/setup.md) | ✅ | ❌ (~$1/mo) | Medium |
+| [Cloudflare LB](cloudflare/setup.md) | ✅ | ❌ (paid) | Easy |
+| [Cloudflare Workers](cloudflare/setup.md) | Simulated | ✅ (limited) | Medium |
+| NS1 | ✅ | ✅ (up to 500k queries/mo) | Medium |
 
-## توصیه
+## Recommendation
 
-برای پروداکشن: **AWS Route53** با Health Check.
+For production: **AWS Route53** with Health Checks.
 
-برای تست سریع: **Cloudflare Workers**.
+For a quick test: **Cloudflare Workers**.

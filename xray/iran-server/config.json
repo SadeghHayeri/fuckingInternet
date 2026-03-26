@@ -4,7 +4,7 @@
   },
   "inbounds": [
     {
-      "// COMMENT": "پورت ۸۰ — HTTP رو از کاربر می‌گیره و فوروارد می‌کنه",
+      "// COMMENT": "Port 80 — accepts HTTP from users and forwards it",
       "port": 80,
       "protocol": "dokodemo-door",
       "settings": {
@@ -16,7 +16,7 @@
       "tag": "http-in"
     },
     {
-      "// COMMENT": "پورت ۴۴۳ — HTTPS رو از کاربر می‌گیره و فوروارد می‌کنه",
+      "// COMMENT": "Port 443 — accepts HTTPS from users and forwards it",
       "port": 443,
       "protocol": "dokodemo-door",
       "settings": {
@@ -30,7 +30,7 @@
   ],
   "outbounds": [
     {
-      "// COMMENT": "تانل به سرور خارج از طریق vmess/websocket",
+      "// COMMENT": "Tunnel to the foreign server via vmess/websocket",
       "protocol": "vmess",
       "settings": {
         "vnext": [

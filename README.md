@@ -1,58 +1,58 @@
-# فاک اینترنت - GeoDNS + Xray راهنما
+# fuckingInternet - GeoDNS + Xray Guide
 
-چطوری با **GeoDNS** و **Xray** وبسایتتون هم از داخل ایران و هم از خارج از ایران در دسترس باشه؟
-
----
-
-## مشکل چیه؟
-
-دو سناریو رایج داری:
-
-1. **سرور خارج دارید** — کاربرهای ایران به خاطر فیلترینگ بهش دسترسی ندارن
-2. **سرور ایران دارید** — کاربرهای خارج به خاطر تحریم‌ها بهش دسترسی ندارن
-
-هدف: هر دو گروه روی **همون دامنه** سایت رو ببینن.
+How to make your website accessible from **both inside and outside Iran** using GeoDNS and Xray.
 
 ---
 
-## معماری کلی
+## The Problem
+
+Two common scenarios:
+
+1. **Server is outside Iran** — Iranian users can't reach it due to filtering
+2. **Server is inside Iran** — international users can't reach it due to sanctions
+
+Goal: both groups access the site on the **same domain**.
+
+---
+
+## Architecture
 
 ```
-کاربر ایران
+Iranian user
     │
     ▼
-DNS → آی‌پی سرور ایران
+DNS → Iran server IP
     │
     ▼
-سرور ایران  ──── Xray tunnel ────►  سرور خارج (اصلی)
-    │                                      │
-    └── port forward ──────────────────────┘
-                                    بک‌اند اصلی
+Iran server  ──── Xray tunnel ────►  Foreign server (main)
+    │                                        │
+    └── port forward ────────────────────────┘
+                                      main backend
 
 
-کاربر خارج
+Foreign user
     │
     ▼
-DNS → آی‌پی سرور خارج (اصلی)
+DNS → Foreign server IP (main)
     │
     ▼
-سرور خارج (اصلی)
+Foreign server (main)
 ```
 
-ساده‌ست: GeoDNS بر اساس موقعیت کاربر آی‌پی مختلف برمی‌گردونه. هر دو آی‌پی در نهایت به همون بک‌اند وصلن.
+GeoDNS returns different IPs based on the user's location. Both IPs eventually reach the same backend.
 
 ---
 
-## پیش‌نیازها
+## Prerequisites
 
-- یک سرور **داخل ایران** (مثلاً Arvan Cloud، Parspack، و غیره)
-- یک سرور **خارج از ایران** (سرور اصلی)
-- یک کانفیگ **vmess/vless** برای تانل بین دو سرور (از دوستان یا سرویس‌های تلگرامی)
-- یک **DNS** که GeoDNS پشتیبانی کنه (Cloudflare، AWS Route53، HetznerDNS و غیره)
+- A server **inside Iran** (e.g. Arvan Cloud, Parspack, etc.)
+- A server **outside Iran** (your main server)
+- A **vmess/vless config** for tunneling between the two servers
+- A **DNS provider** with GeoDNS support (Cloudflare, AWS Route53, etc.)
 
 ---
 
-## ساختار ریپو
+## Repo Structure
 
 ```
 .
@@ -60,57 +60,56 @@ DNS → آی‌پی سرور خارج (اصلی)
 ├── xray/
 │   ├── README.md
 │   ├── iran-server/
-│   │   └── config.json          # کانفیگ Xray سرور ایران (outbound tunnel)
+│   │   └── config.json          # Xray config for Iran server (outbound tunnel)
 │   └── foreign-server/
-│       └── config.json          # کانفیگ Xray سرور خارج (inbound)
+│       └── config.json          # Xray config for foreign server (inbound)
 ├── geodns/
 │   ├── README.md
 │   ├── cloudflare/
-│   │   └── setup.md             # راه‌اندازی GeoDNS با Cloudflare
+│   │   └── setup.md             # GeoDNS setup with Cloudflare
 │   └── route53/
-│       └── setup.md             # راه‌اندازی GeoDNS با AWS Route53
+│       └── setup.md             # GeoDNS setup with AWS Route53
 └── scripts/
     ├── README.md
-    ├── install-xray.sh          # نصب Xray
-    ├── setup-iran-server.sh     # راه‌اندازی سرور ایران
-    └── health-check.sh          # چک کردن وضعیت تانل
+    ├── install-xray.sh          # Install Xray
+    ├── setup-iran-server.sh     # Set up the Iran server
+    └── health-check.sh          # Check tunnel status
 ```
 
 ---
 
-## مراحل راه‌اندازی
+## Setup Steps
 
-### ۱. نصب Xray
+### 1. Install Xray
 ```bash
 bash scripts/install-xray.sh
 ```
 
-### ۲. راه‌اندازی سرور خارج (اصلی)
-کانفیگ `xray/foreign-server/config.json` رو روی سرور خارج قرار بدید و Xray رو اجرا کنید.
+### 2. Set up the foreign server (main)
+Place `xray/foreign-server/config.json` on the foreign server and run Xray.
 
-### ۳. راه‌اندازی سرور ایران
-کانفیگ `xray/iran-server/config.json` رو روی سرور ایران قرار بدید.
-مقادیر زیر رو جایگزین کنید:
-- `YOUR_VMESS_UUID` — UUID که از کانفیگ vmess/vless خریداری کردید
-- `FOREIGN_SERVER_IP` — آی‌پی سرور خارج
-- `YOUR_DOMAIN_CERT` — مسیر SSL سرتیفیکیت
+### 3. Set up the Iran server
+Place `xray/iran-server/config.json` on the Iran server.
+Replace the following values:
+- `YOUR_VMESS_UUID` — the UUID from your vmess/vless config
+- `FOREIGN_SERVER_IP` — IP address of the foreign server
 
-### ۴. راه‌اندازی GeoDNS
-ببینید از چه DNS استفاده می‌کنید:
+### 4. Set up GeoDNS
+Pick your DNS provider:
 - [Cloudflare](geodns/cloudflare/setup.md)
 - [AWS Route53](geodns/route53/setup.md)
 
 ---
 
-## نکات مهم
+## Important Notes
 
-- این روش **port forwarding** هست، نه پروکسی معمولی — لیتنسی اضافه می‌کنه
-- سرور ایران فقط تانل هست، بار اصلی روی سرور خارجیه
-- SSL رو روی **هر دو سرور** باید تنظیم کنید (یا wildcard cert بگیرید)
-- اگه سرور اصلی **خارج** هست، سرور ایران فقط Xray می‌خواد و nginx/apache لازم نیست
+- This is **port forwarding**, not a traditional proxy — it adds some latency
+- The Iran server is only a tunnel; all real load stays on the foreign server
+- SSL must be configured on **both servers** (or use a wildcard cert)
+- The Iran server only needs Xray — no nginx/apache required
 
 ---
 
-## مشارکت
+## Contributing
 
-PR بزنید، issue باز کنید. هر کمکی خوشحال می‌شیم.
+Open a PR or an issue. Contributions welcome.

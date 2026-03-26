@@ -1,5 +1,5 @@
 #!/bin/bash
-# نصب Xray-core روی لینوکس
+# Install Xray-core on Linux
 
 set -e
 

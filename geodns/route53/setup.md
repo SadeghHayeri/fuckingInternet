@@ -1,12 +1,12 @@
-# GeoDNS با AWS Route53
+# GeoDNS with AWS Route53
 
-Route53 از **Geolocation Routing** پشتیبانی می‌کنه — دقیقاً همین چیزیه که نیاز داریم.
+Route53 supports **Geolocation Routing** natively — exactly what we need.
 
 ---
 
-## ۱. Hosted Zone بسازید
+## 1. Create a Hosted Zone
 
-اگه دامنه‌تون جای دیگه‌ایه، یا NS رو به Route53 پوینت کنید یا از روش Delegation استفاده کنید.
+If your domain is registered elsewhere, either point the NS records to Route53 or use delegation.
 
 ```
 AWS Console > Route53 > Hosted Zones > Create Hosted Zone
@@ -16,12 +16,12 @@ Type: Public
 
 ---
 
-## ۲. رکورد برای سرور ایران
+## 2. Record for the Iran server
 
 ```
 Route53 > yourdomain.com > Create Record
 
-Name: yourdomain.com (یا @ برای root)
+Name: yourdomain.com (or @ for root)
 Type: A
 Value: IRAN_SERVER_IP
 TTL: 60
@@ -33,7 +33,7 @@ Record ID: iran-record
 
 ---
 
-## ۳. رکورد پیش‌فرض (خارج)
+## 3. Default record (everyone else)
 
 ```
 Name: yourdomain.com
@@ -42,15 +42,15 @@ Value: FOREIGN_SERVER_IP
 TTL: 60
 
 Routing Policy: Geolocation
-Location: Default (همه جاهای دیگه)
+Location: Default
 Record ID: default-record
 ```
 
 ---
 
-## ۴. Health Check (اختیاری ولی توصیه می‌شه)
+## 4. Health Checks (optional but recommended)
 
-اگه یه سرور down شد، Route53 ترافیک رو به اون نفرسته:
+If a server goes down, Route53 will stop sending traffic to it:
 
 ```
 Route53 > Health Checks > Create Health Check
@@ -63,26 +63,25 @@ Port: 443
 Path: /health
 ```
 
-همین رو برای سرور خارج هم بسازید، بعد به هر رکورد health check مربوطه رو assign کنید.
+Create the same for the foreign server, then assign each health check to its corresponding DNS record.
 
 ---
 
-## ۵. تست
+## 5. Testing
 
 ```bash
-# چک کن از ایران چه آی‌پی برمی‌گرده
-# (با یه VPN ایران تست کن)
+# Check which IP is returned (test with an Iranian VPN for the Iran record)
 dig yourdomain.com @8.8.8.8
 
-# تست مستقیم
+# Direct reachability test
 curl -H "Host: yourdomain.com" https://IRAN_SERVER_IP/
 curl -H "Host: yourdomain.com" https://FOREIGN_SERVER_IP/
 ```
 
 ---
 
-## هزینه
+## Cost
 
-- Hosted Zone: ~$0.50/ماه
+- Hosted Zone: ~$0.50/month
 - Geolocation queries: ~$0.70 per million queries
-- Health Checks: ~$0.50/ماه هر چک
+- Health Checks: ~$0.50/month each

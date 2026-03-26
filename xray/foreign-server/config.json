@@ -4,7 +4,7 @@
   },
   "inbounds": [
     {
-      "// COMMENT": "این inbound برای دریافت تانل از سرور ایران هست",
+      "// COMMENT": "Receives the tunnel connection from the Iran server",
       "port": 10443,
       "protocol": "vmess",
       "settings": {

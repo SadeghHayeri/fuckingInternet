@@ -1,38 +1,38 @@
 # Xray Configuration
 
-## سرور خارج (`foreign-server/config.json`)
+## Foreign server (`foreign-server/config.json`)
 
-یک **inbound vmess** روی پورت `10443` باز می‌کنه که سرور ایران بهش وصل می‌شه.
+Opens a **vmess inbound** on port `10443` that the Iran server connects to.
 
-مقادیری که باید عوض کنید:
-- `YOUR_VMESS_UUID` — یک UUID تصادفی بسازید: `cat /proc/sys/kernel/random/uuid`
+Values to replace:
+- `YOUR_VMESS_UUID` — generate a random UUID: `cat /proc/sys/kernel/random/uuid`
 
-## سرور ایران (`iran-server/config.json`)
+## Iran server (`iran-server/config.json`)
 
-پورت‌های `80` و `443` رو می‌گیره و از طریق تانل vmess به سرور خارج می‌فرسته.
+Accepts traffic on ports `80` and `443` and forwards it through a vmess tunnel to the foreign server.
 
-مقادیری که باید عوض کنید:
-- `YOUR_VMESS_UUID` — همون UUID سرور خارج
-- `FOREIGN_SERVER_IP` — آی‌پی سرور خارج
+Values to replace:
+- `YOUR_VMESS_UUID` — same UUID as the foreign server
+- `FOREIGN_SERVER_IP` — IP address of the foreign server
 
-## اجرا
+## Running
 
 ```bash
-# نصب
+# Install
 bash ../../scripts/install-xray.sh
 
-# اجرا با کانفیگ
+# Run with config
 xray run -config config.json
 
-# یا به عنوان سرویس systemd
+# Or as a systemd service
 cp config.json /usr/local/etc/xray/config.json
 systemctl enable xray
 systemctl start xray
 ```
 
-## تست تانل
+## Testing the tunnel
 
 ```bash
-# از سرور ایران، چک کن که به سرور خارج وصل میشه
+# From the Iran server, verify it can reach the foreign server
 curl -v --proxy socks5://127.0.0.1:10808 https://YOUR_DOMAIN.com
 ```

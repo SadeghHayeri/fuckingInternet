@@ -1,5 +1,5 @@
 #!/bin/bash
-# چک کردن وضعیت تانل و دسترس‌پذیری سایت
+# Check tunnel status and site reachability
 
 DOMAIN="${1:-}"
 IRAN_IP="${2:-}"
