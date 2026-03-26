@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets / local overrides
+*.local
+.env
+.env.*
+
+# BIND runtime files
+*.jnl
+*.pid
+named.run
+
+# Nginx cache
+/var/cache/nginx/
